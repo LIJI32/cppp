@@ -8,10 +8,23 @@ prefix = /usr/local
 
 all: cppp
 
-CC = gcc
+PLATFORM := $(shell uname -s)
+
+ifneq ($(findstring MSYS,$(PLATFORM)),)
+PLATFORM := windows32
+endif
+
+
+ifeq ($(PLATFORM),windows32)
+UNIXISMS := unixisms-win32
+else
+UNIXISMS := unixisms
+endif
+
+CC := clang
 CFLAGS = -Wall -Wextra -O2
 
-OBJLIST = gen.o unixisms.o error.o symset.o mstr.o \
+OBJLIST = gen.o $(UNIXISMS).o error.o symset.o mstr.o \
           clexer.o exptree.o ppproc.o cppp.o
 
 cppp: $(OBJLIST)
@@ -26,6 +39,8 @@ exptree.o : exptree.c exptree.h gen.h types.h error.h symset.h clexer.h
 ppproc.o  : ppproc.c ppproc.h gen.h types.h error.h symset.h mstr.h \
             clexer.h exptree.h
 cppp.o    : cppp.c gen.h types.h unixisms.h error.h symset.h ppproc.h
+
+unixisms-win32.o: unixisms-win32.c unixisms.h
 
 install:
 	cp ./cppp $(prefix)/bin/.

@@ -32,6 +32,12 @@ int restoredir(void)
     return SetCurrentDirectory(saveddir);
 }
 
+/* Forget the directory remembered by savedir().
+ */
+void unsavedir(void)
+{
+}
+
 /* Returns true if the filename is a directory.
  */
 int fileisdir(char const *name)
